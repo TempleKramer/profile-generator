@@ -1,22 +1,6 @@
 const inquirer = require('inquirer');
-const fs = require('fs')
-console.log(inquirer)
-const generateHtml = ({name, birthplace}) => `<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Portfolio Demo</title>
-</head>
-
-<body>
-  <h1>${name}</h1>
-  <h2><a href="https://github.com/${birthplace}">Github</a></h2>
-</body>
-</html>
-`
+const fs = require('fs');
+const generatePage = require('./src/page-template');
 
 const promptUser = () => {
   return inquirer .prompt([
@@ -154,21 +138,14 @@ function promptProject(portfolioData) {
 }
 
 promptUser()
-  .then(answers => console.log(answers))
-  .then(promptProject)
-  .then(projectAnswers => console.log(projectAnswers));
+   .then(promptProject)
+   .then(portfolioData => {
+    const pageHTML = generatePage(portfolioData);
 
-// const fs = require('fs');
-// const generatePage = require('./src/page-template');
+     fs.writeFile('./index.html', pageHTML, err => {
+      if (err) throw err;
 
-// const pageHTML = generatePage(name, github);
-
-// fs.writeFile('./index.html', pageHTML, err => {
-//   if (err) throw err;
-
-//   console.log('Portfolio complete! Check out index.html to see the output!');
-// });
-
-
-
-
+       console.log('Portfolio complete! Check out index.html to see the output!');
+    });
+    
+   });
